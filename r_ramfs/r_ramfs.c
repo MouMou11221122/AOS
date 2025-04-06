@@ -30,7 +30,7 @@ static void make_real_path(char *out_path, const char *path)
 }
 
 /* create */
-static int r__ramfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
+static int r_ramfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
 {   
     char real_path[MAX_PATH_LEN];
     make_real_path(real_path, path);
@@ -61,6 +61,11 @@ static int r_ramfs_open(const char *path, struct fuse_file_info *fi)
     return 0;
 }
 
+/* fuse_operations struct */
+static struct fuse_operations uc_oper = {
+    .create   = r_ramfs_create,
+    .open     = r_ramfs_open,
+};
 
 int main(int argc, char *argv[])
 {
