@@ -8,11 +8,12 @@
 #include <unistd.h>     
 #include <sys/stat.h>   
 #include <dirent.h>     
-#include <sys/types.h>  
+#include <sys/types.h>
+#include <limits.h>
 #include <sys/time.h>       // for struct timespec, utimensat
 #include <sys/statvfs.h>    // for statvfs
 
-#define MAX_PATH_LEN 1024
+#define MAX_PATH_LEN PATH_MAX
 
 static const char* BACKING_DIR = "/home/moumou/ram_fs";
 
