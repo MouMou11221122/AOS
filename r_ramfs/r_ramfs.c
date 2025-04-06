@@ -61,6 +61,22 @@ static int r_ramfs_open(const char *path, struct fuse_file_info *fi)
     return 0;
 }
 
+/* getattr */
+static int r_ramfs_getattr(const char *path, struct stat *stbuf, struct fuse_file_info *fi)
+{
+    (void) fi;
+    char real_path[MAX_PATH_LEN];
+    memset(stbuf, 0, sizeof(struct stat));
+    make_real_path(real_path, path);
+
+    /* TODO: implement remote getattr using rdma */
+    if (lstat(real_path, stbuf) == -1) {
+        return -errno;
+    }
+
+    return 0;
+}
+
 /* mkdir */
 static int r_ramfs_mkdir(const char *path, mode_t mode)
 {
@@ -79,6 +95,7 @@ static int r_ramfs_mkdir(const char *path, mode_t mode)
 static struct fuse_operations uc_oper = {
     .create   = r_ramfs_create,
     .open     = r_ramfs_open,
+    .getattr  = r_ramfs_getattr,
     .mkdir    = r_ramfs_mkdir,
 };
 
