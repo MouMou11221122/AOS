@@ -1,2 +1,2 @@
-environment/*
-!environment/setup.sh
+HW1/*
+!HW1/setup.sh
