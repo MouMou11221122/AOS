@@ -29,6 +29,23 @@ static void make_real_path(char *out_path, const char *path)
     }
 }
 
+/* open */
+static int r_ramfs_open(const char *path, struct fuse_file_info *fi)
+{
+    char real_path[MAX_PATH_LEN];
+    make_real_path(real_path, path);
+
+    /* TODO: implement remote open using rdma */
+    int fd = open(real_path, fi->flags);
+
+    if (fd == -1) {
+        return -errno;                                                                                                                                                                                          
+    }
+    fi->fh = fd;
+    return 0;
+}
+
+
 int main(int argc, char *argv[])
 {
     return fuse_main(argc, argv, &uc_oper, NULL);
