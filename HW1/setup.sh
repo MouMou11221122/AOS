@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# environment: machine 54
+
 qemu-system-x86_64 \
   -enable-kvm \
   -cpu host \
