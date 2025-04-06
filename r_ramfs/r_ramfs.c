@@ -29,6 +29,22 @@ static void make_real_path(char *out_path, const char *path)
     }
 }
 
+/* create */
+static int uc_create(const char *path, mode_t mode, struct fuse_file_info *fi)
+{   
+    char real_path[MAX_PATH_LEN];
+    make_real_path(real_path, path);
+
+    /* TODO: implement remote create using rdma */
+    int fd = open(real_path, fi->flags | O_CREAT, mode);
+
+    if (fd == -1) {
+        return -errno;
+    }
+    fi->fh = fd;
+    return 0;
+}
+
 /* open */
 static int r_ramfs_open(const char *path, struct fuse_file_info *fi)
 {
