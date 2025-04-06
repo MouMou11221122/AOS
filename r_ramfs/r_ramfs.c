@@ -61,10 +61,25 @@ static int r_ramfs_open(const char *path, struct fuse_file_info *fi)
     return 0;
 }
 
+/* mkdir */
+static int r_ramfs_mkdir(const char *path, mode_t mode)
+{
+    char real_path[MAX_PATH_LEN];
+    make_real_path(real_path, path);
+
+    /* TODO: implement remote mkdir using rdma */
+    if (mkdir(real_path, mode) == -1) {
+        return -errno;
+    }
+
+    return 0;
+}
+
 /* fuse_operations struct */
 static struct fuse_operations uc_oper = {
     .create   = r_ramfs_create,
     .open     = r_ramfs_open,
+    .mkdir    = r_ramfs_mkdir,
 };
 
 int main(int argc, char *argv[])
