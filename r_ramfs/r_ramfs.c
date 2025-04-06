@@ -77,6 +77,37 @@ static int r_ramfs_getattr(const char *path, struct stat *stbuf, struct fuse_fil
     return 0;
 }
 
+/* readdir */
+static int r_ramfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
+                      off_t offset, struct fuse_file_info *fi,
+                      enum fuse_readdir_flags flags)
+{                 
+    (void) offset;
+    (void) fi;    
+    (void) flags; 
+    char real_path[MAX_PATH_LEN];
+    make_real_path(real_path, path);
+
+    /* TODO: implement remote readdir using rdma */
+    DIR *dp = opendir(real_path);
+    if (!dp) {    
+        return -errno;
+    }             
+    struct dirent *de;
+    while ((de = readdir(dp)) != NULL) {                                                                                                                                                                        
+        struct stat st;
+        memset(&st, 0, sizeof(st));
+        st.st_ino  = de->d_ino;
+        st.st_mode = de->d_type << 12;
+        if (filler(buf, de->d_name, &st, 0, (enum fuse_fill_dir_flags)0) != 0) {
+            break;
+        }         
+    }             
+    closedir(dp);
+
+    return 0;     
+} 
+
 /* mkdir */
 static int r_ramfs_mkdir(const char *path, mode_t mode)
 {
@@ -96,6 +127,7 @@ static struct fuse_operations uc_oper = {
     .create   = r_ramfs_create,
     .open     = r_ramfs_open,
     .getattr  = r_ramfs_getattr,
+    .readdir  = r_ramfs_readdir,
     .mkdir    = r_ramfs_mkdir,
 };
 
