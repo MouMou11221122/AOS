@@ -16,7 +16,18 @@
 
 static const char* BACKING_DIR = "/home/moumou/ram_fs";
 
-
+static void make_real_path(char *out_path, const char *path)
+{   
+    if (strlen(path) == 0) {
+        snprintf(out_path, MAX_PATH_LEN, "%s", BACKING_DIR);
+    } else {
+        if (path[0] == '/') {
+            snprintf(out_path, MAX_PATH_LEN, "%s%s", BACKING_DIR, path);
+        } else {
+            snprintf(out_path, MAX_PATH_LEN, "%s/%s", BACKING_DIR, path);
+        }
+    }
+}
 
 int main(int argc, char *argv[])
 {
