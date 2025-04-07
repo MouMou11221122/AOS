@@ -410,7 +410,7 @@ static int r_ramfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
         return -errno;
     }             
     struct dirent *de;
-    while ((de = readdir(dp)) != NULL) {                                                                                                                                                                        
+    while ((de = readdir(dp)) != NULL) { 
         struct stat st;
         memset(&st, 0, sizeof(st));
         st.st_ino  = de->d_ino;
@@ -500,7 +500,6 @@ void setup_rdma_connection ()
 
 int main(int argc, char *argv[])
 {
-
     /* register SIGINT signal handler */
     struct sigaction sa;
     sa.sa_handler = signal_handler;
