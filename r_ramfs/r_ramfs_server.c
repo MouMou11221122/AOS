@@ -1,6 +1,8 @@
 #include <infiniband/verbs.h> 
 #include <stdio.h>
 #include <stdlib.h>
+#include <inttypes.h>
+#include <stdint.h>
 
 #define HCA_PORT_NUM    1
 
