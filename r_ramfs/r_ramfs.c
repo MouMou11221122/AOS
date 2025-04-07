@@ -33,9 +33,9 @@ struct ibv_mr* mr;
 /////////////////////////////////////////////////////////
 /*
  * This section details the format of RDMA local-to-remote request message.
- * --------------------------------------------------------------------------------
- * | l-t-r | request type | request size | request content | data content(if any) |
- * --------------------------------------------------------------------------------
+ * -----------------------------------------------------------------------
+ * | l-to-r | request type | request size | parameters | payload(if any) |
+ * -----------------------------------------------------------------------
  */
 
 /* clean-up function */
