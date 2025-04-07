@@ -31,6 +31,14 @@ struct ibv_mr* mr;
 /////////////////////////////////////////////////////////
 ////////////////Begin of RDMA region/////////////////////
 /////////////////////////////////////////////////////////
+
+/*
+ * This section details the format of RDMA local-to-remote request message.
+ * --------------------------------------------------------------------------------
+ * | l-t-r | request type | request size | request content | data content(if any) |
+ * --------------------------------------------------------------------------------
+ */
+
 /* clean-up function */
 void clean_up(int error_num) 
 {
