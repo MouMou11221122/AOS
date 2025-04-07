@@ -31,7 +31,6 @@ struct ibv_mr* mr;
 /////////////////////////////////////////////////////////
 ////////////////Begin of RDMA region/////////////////////
 /////////////////////////////////////////////////////////
-
 /*
  * This section details the format of RDMA local-to-remote request message.
  * --------------------------------------------------------------------------------
@@ -448,17 +447,10 @@ static struct fuse_operations uc_oper = {
     .mkdir    = r_ramfs_mkdir,
 };
 
-int main(int argc, char *argv[])
+void setup_rdma_connection ()
 {
     /* device name(RNIC physical port) */
     const char* device_name = "mlx5_1";
-
-    /* register SIGINT signal handler */
-    struct sigaction sa;
-    sa.sa_handler = signal_handler;
-    sa.sa_flags = 0;
-    sigemptyset(&sa.sa_mask);
-    sigaction(SIGINT, &sa, NULL);
 
     /* open the RDMA device context */
     context = create_context(device_name);
@@ -504,6 +496,19 @@ int main(int argc, char *argv[])
 
     /* transition the QP to RTS state */
     if (transition_to_rts_state(qp)) clean_up(-1);
+}
+
+int main(int argc, char *argv[])
+{
+
+    /* register SIGINT signal handler */
+    struct sigaction sa;
+    sa.sa_handler = signal_handler;
+    sa.sa_flags = 0;
+    sigemptyset(&sa.sa_mask);
+    sigaction(SIGINT, &sa, NULL);
+
+    setup_rdma_connection();
 
     return fuse_main(argc, argv, &uc_oper, NULL);
 }
