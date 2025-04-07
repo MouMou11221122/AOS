@@ -15,6 +15,13 @@ struct ibv_qp* qp;
 void* buffer;
 struct ibv_mr* mr;
 
+/*
+ * This section details the format of RDMA remote-to-local reply message.
+ * ---------------------------------------------------------
+ * | r-to-l | reply size | return number | payload(if any) |
+ * ---------------------------------------------------------
+ */
+
 /* clean-up function */
 void clean_up(int error_num)
 {     
