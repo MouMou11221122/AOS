@@ -442,5 +442,55 @@ static struct fuse_operations uc_oper = {
 
 int main(int argc, char *argv[])
 {
+    /* device name(RNIC physical port) */
+    const char* device_name = "mlx5_1";
+
+    /* register SIGINT signal handler */
+    struct sigaction sa;
+    sa.sa_handler = signal_handler;
+    sa.sa_flags = 0;
+    sigemptyset(&sa.sa_mask);
+    sigaction(SIGINT, &sa, NULL);
+
+    /* open the RDMA device context */
+    context = create_context(device_name);
+    if (!context) clean_up(-1);
+
+    /* get the LID of the port */
+    lid = get_lid(context);
+    if (lid == 0) clean_up(-1);
+
+    /* create a protection domain */
+    pd = create_protection_domain(context);
+    if (!pd) clean_up(-1);
+
+    /* create a completion queue */
+    const int cq_size = 16;
+    cq = create_completion_queue(context, cq_size);
+    if (!cq) clean_up(-1);
+
+    /* create a queue pair */
+    qp = create_queue_pair(pd, cq);
+    if (!qp) clean_up(-1);
+
+    /* transition the QP to INIT state */
+    if (transition_to_init_state(qp)) clean_up(-1);
+
+    /* transition the QP to RTR state */
+    uint16_t server_lid;
+    uint32_t server_qp_num;
+
+    printf("Enter server LID: ");
+    scanf("%" SCNu16, &server_lid);
+
+    printf("Enter server QP number: ");
+    scanf("%" SCNu32, &server_qp_num);
+
+    /* transition the QP to RTR state */
+    if (transition_to_rtr_state(qp, server_lid, server_qp_num)) clean_up(-1);
+
+    /* transition the QP to RTS state */
+    if (transition_to_rts_state(qp)) clean_up(-1);
+
     return fuse_main(argc, argv, &uc_oper, NULL);
 }
