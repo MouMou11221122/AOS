@@ -47,10 +47,6 @@ void clean_up(int error_num)
         ibv_dereg_mr(mr);
         fprintf(stdout, "Memory region mr deregistered successfully.\n");
     }
-    if (mr_ack) {
-        ibv_dereg_mr(mr_ack);
-        fprintf(stdout, "Memory region mr_ack deregistered successfully.\n");
-    }
     if (buffer) {
         free(buffer);
         fprintf(stdout, "Client Buffer freed successfully.\n");
@@ -62,10 +58,6 @@ void clean_up(int error_num)
     if (context) {
         ibv_close_device(context);
         fprintf(stdout, "RDMA device context closed successfully.\n");
-    }
-    if (sockfd) {
-        close(sockfd);
-        fprintf(stdout, "Client socket closed successfully.\n");
     }
     if (error_num == -1) exit(1);
     else exit(0);
