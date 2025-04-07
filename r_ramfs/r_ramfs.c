@@ -18,6 +18,16 @@
 
 static const char* BACKING_DIR = "/home/moumou/ram_fs";
 
+/* RDMA infos */
+#define HCA_PORT_NUM                1
+struct ibv_context* context;
+uint16_t lid;
+struct ibv_pd* pd;
+struct ibv_cq* cq;
+struct ibv_qp* qp;
+void* buffer;
+struct ibv_mr* mr;
+
 /////////////////////////////////////////////////////////
 ////////////////Begin of RDMA region/////////////////////
 /////////////////////////////////////////////////////////
@@ -472,6 +482,11 @@ int main(int argc, char *argv[])
     /* create a queue pair */
     qp = create_queue_pair(pd, cq);
     if (!qp) clean_up(-1);
+
+    /* register a memory region */
+    size_t buffer_size = 1 << 30;
+    mr = register_memory_region(pd, buffer_size, &buffer);
+    if (!mr) clean_up(-1);
 
     /* transition the QP to INIT state */
     if (transition_to_init_state(qp)) clean_up(-1);
