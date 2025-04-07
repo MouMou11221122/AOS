@@ -10,8 +10,8 @@
 #include <dirent.h>     
 #include <sys/types.h>
 #include <limits.h>
-#include <sys/time.h>       // for struct timespec, utimensat
-#include <sys/statvfs.h>    // for statvfs
+#include <sys/time.h>           // for struct timespec, utimensat
+#include <sys/statvfs.h>        // for statvfs
 #include <infiniband/verbs.h>
 
 #define MAX_PATH_LEN PATH_MAX
@@ -19,7 +19,7 @@
 static const char* BACKING_DIR = "/home/moumou/ram_fs";
 
 /* RDMA infos */
-#define HCA_PORT_NUM                1
+#define HCA_PORT_NUM        1
 struct ibv_context* context;
 uint16_t lid;
 struct ibv_pd* pd;
@@ -288,8 +288,6 @@ int perform_rdma_write(struct ibv_qp* qp, struct ibv_mr* mr, uint64_t remote_add
     wr.wr.rdma.rkey        = rkey;        // server memory region key
 
     struct ibv_send_wr* bad_wr = NULL;
-    /* start timestamp */
-    clock_gettime(CLOCK_REALTIME, &timestamp[timestamp_count++]);
     if (ibv_post_send(qp, &wr, &bad_wr)) {
         perror("[ERROR] Failed to post the RDMA write request");
         return -1;
